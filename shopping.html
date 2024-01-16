@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="shopping.css"/>
+    <title>Shopping</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <a class="btn btn-warning" href="index.html">Glavnaya stranica</a>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-3">
+                <input
+                  id="category-search-input"
+                  type="search"
+                  class="form-control"
+                  placeholder="Poisk"
+                  oninput="searchCategory(this)"
+                /><br />
+                <div id="computers-categories-div"></div>  
+            </div>
+            <div class="col-sm-9">
+                <div id="computers-loading">
+                    <div class="spinner-border"></div>
+                </div>
+                <div id="computers-div"></div>
+                <div id="computers-loading-next">
+                    <div class="spinner-border"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="open-basket-button"
+      onclick="onOpenBasket()"
+    >
+      Korzina <span id="basket-computer-count" class="badge badge-light">0</span>
+    </button>
+    
+    <div id="computer-details-modal">
+        <div id="computer-details-modal-content">
+            <h2 style="text-align: center;">Podrobnaya informaciya o kompyutere</h2>
+            <div id="computer-modal-image-container"></div>
+            <div id="computer-modal-name"></div>
+            <div id="computer-modal-description">Opisaniye</div>
+            <div id="computer-modal-price">Cena</div>
+            <div id="computer-modal-phne">Telefon</div>
+            <div id="computer-modal-new">Noviy</div>
+            <div id="computer-modal-ram">Operativnaya pamat</div>
+            <div id="computer-modal-cpu">CPU</div>
+            <div id="computer-modal-drive">Postoyannaya pamyat</div>
+            <div id="computer-modal-drive-type">Tip postoyannoy pamyati</div>
+            <div id="computer-modal-os">Operativnaya pamyat</div>
+            <div id="computer-modal-video-card">Video karta</div>
+        </div>
+    </div>
+    
+    <div id="basket-modal">
+      <div id="basket-modal-content" style="overflow-x: auto;">
+        <span id="basket-modal-close-button">x</span>
+      </div>
+      <h1 style="text-align: center;">Korzina</h1>
+      <table class="basket-table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Foto</th>
+
+            <th>Nazvanie</th>
+            <th>Cena</th>
+            <th>Kolichestvo</th>
+            <th>Obshaya cena</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="basket-computers-table-body"></tbody>
+      </table>
+
+      <div style="overflow: auto;">
+        <span id="basket-total-price-">
+          Obshaya cena:
+        <span id="basket-total-price-content">0</span> AZN</span
+       >
+       <button
+          onklick="clearBasket()"
+          id="clear-basket-button"
+          class="btn btn-danger"
+        >
+         Ocistit korzinu 
+       </button>
+       <button
+         onclick="confirmOrder()"
+         id="confirm-order-button"
+         class="btn btn-success"
+         >
+         Podtverdit zakaz
+        </button> 
+      </div>
+    </div>
+
+    <div id="confirm-order-modal">
+      <div id="confirm-order-modal-content">
+        <div style="overflow: auto; margin-bottom: 5px;">
+          <span id="confirm-order-modal-close-button">x</span>
+        </div>
+        <h1 style="text-align: center;">pishite vashi kontakti</h1>
+        <div id="confirm-order-modal-form-div">
+          <form
+            id="confirm-order-modal-form"
+            action=""
+            class="was-validated"
+            onsubmit="onOrderSubmit(event)"
+          >
+            <div class="form-group">
+              <label for="customer-name">Ima:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="customer-name"
+                placeholder="Pishite vashe ima"
+                name="customer-name"
+                required
+                minlength="2"
+                maxlength="30"
+              />
+              <div class="valid-feedback">prinyato</div>
+              <div class="invalid-feedback">
+                Ne ostavlayte pole pustim. minimum 2, maximum 30 simvolov
+              </div>  
+            </div>
+            
+            <div class="form-group">
+              <label for="customer-adress">dress</label>
+              <input
+                type="text"
+                class="form-control"
+                id="customer-adress"
+                placeholder="Pishite vash adres"
+                name="customer-adress"
+                required
+                maxlength="300"
+              />
+              <div class="valid-feedback">prinyato</div>
+              <div class="invalid-feedback">
+                Ne ostavlayte pustim
+              </div> 
+            </div>
+            
+            <div class="form-group">
+              <label for="customer-phone"></label>
+              <input
+                type="text"
+                class="form-control"
+                id="customer-phone"
+                placeholder="Pishite vash telefonniy nomer"
+                name="customer-phone"
+                required
+                pattern="((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}"
+              />
+              <div class="valid-feedback">correct</div>
+              <div class="invalid-feedback">
+                phone number is not correct. you need to insert this pattern (000-000-0000).
+
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="customer-email">Email:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="customer-email"
+                placeholder="Insert your Email"
+                name="customer-email"
+                required
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}"
+              />
+              <div class="valid-feedback">correct</div>
+              <div class="invalid-feedback">
+                Email is not correct
+              </div>  
+            </div>
+
+            <div class="form-group">
+              <label for="customer-order-note">Notr</label>
+              <input
+                type="text"
+                class="form-control"
+                id="customer-order-note"
+                placeholder="You can take a note"
+                name="customer-order-note"
+                maxlength="300"
+              />
+              <div class="valid-feedback">correct</div>
+              <div class="invalid-feedback">Do not left empty</div>
+
+            </div>
+
+            <div class="form-group form-check">
+              <label class="form-check-label">
+               <input 
+               class="form-check-input"
+               type="checkbox"
+               name="confirmation"
+               required
+              />
+              confirm all data
+              <div class="valid-feedback">Data confirmed</div>
+              <div class="invalid-feedback">data is not confirmed</div>
+              </label> 
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>  
+        </div>
+      </div>
+    </div>
+
+    <div id="fixed-elements"></div>
+    
+    <input
+      type="text"
+      class="form-control"
+      oninput="onSearchInput(this)"
+      onchange="onSearchChange(this)"
+      onkeydown="onSearchKeyDown(event)"
+      id="computer-search-input"
+      placeholder="search"
+    />
+</body>
+</html>

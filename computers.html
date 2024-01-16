@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="index.html" defer></script>
+    <link rel="stylesheet" href="index.css"/>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+    />
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+            console.log('computers-table-element begin');
+            $("#computers-table-element").DataTable({
+                pageLength: 5,
+                lengthMenu: [
+                    [2, 5, 7, 10, 20, 30, 50, 100, -1],
+                    [2, 5, 7, 10, 20, 30, 50, 100, "Vse"],
+                ],
+            });
+            console.log("computers-table-element end");
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid" style="display: none;" id="main-content">
+      <div class="row">
+        <div class="col-sm-12">
+            <hr />
+            <a class="btn btn-warning" href="index.html">Glavnaya stranica</a>
+            <button class="btn btn-primary" onclick="onNewComputer()">
+              new computer
+            </button>
+            <hr />
+
+            <div id="computers-loading">
+                <div class="spinner-border"></div>
+            </div>
+            <div id="computers-table">
+                <table class="table table-bordered" id="computers-table-element">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">ID</th>
+                            <th style="width: 30%;">Name</th>
+                            <th style="width: 20%;">Image</th>
+                            <th style="width: 15%;">Price</th>
+
+                            <th style="width: 25%;">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody id="computers-table-body" style="font-size: 16px;"></tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="save-computer-modal">
+        <div id="save-computer-modal-content">
+            <div style="overflow: auto; margin-bottom: 5px;">
+              <span id="save-computer-modal-close-button">x</span>
+            </div>
+            <h1 style="text-align: center;" id="save-computer-header-message"></h1>
+            <div id="save-computer-modal-form-div">
+                <form
+                  id="save-computer-modal-form"
+                  action=""
+                  class="was-validated"
+                  onsubmit="onSaveComputer(event)"
+                >
+                  <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="computer-category">Category:</label>
+                            <select
+                              id="computer-category"
+                              class="form-control"
+                              style="appearance: none;"
+                            ></select>  
+                        </div>
+
+                        <div class="form-group">
+                            <label for="computer-name">Name:</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="computer-name"
+                              name="computer-name"
+                              required
+                              minlength="0"
+                              maxlength="10000"
+                            />
+                            <div class="valid-feedback">Prinato</div>
+                            <div class="invalid-feedback">
+                                Ne ostavlayte eto pole pustim, min 0, max 10000.
+                            </div>  
+                        </div>
+                        <div class="form-group">
+                            <label for="computer-price">Price:</label>
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="computer-price"
+                              name="computer-price"
+                              required
+                              min="0"
+                              max="100000"
+                            />
+                            <div class="valid-feedback">Prinato</div>
+                            <div class="invalid-feedback">
+                                Ne ostavlayte eto pole pustim, min 0, max 10000.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="computer-description">Description:</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="computer-description"
+                              name="computer-description"
+                              required
+                              min="2"
+                              max="300"
+                            />
+                            <div class="valid-feedback">Prinato</div>
+                            <div class="invalid-feedback">
+                                Ne ostavlayte eto pole pustim, min 2, max 300.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="computer-new">new:</label>
+                            <select
+                              style="appearance: none;"
+                              class="form-control"
+                              id="computer-new"
+                              name="computer-new"
+                            >
+                              <option value="true">Da</option>
+                              <option value="false">Net</option>
+                            </select>    
+                        </div>
+                        <div class="form-group">
+                            <label for="computer-image">Image:</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="computer-image"
+                              oninput="onComputerImageChange(this)"
+                              name="computer-image"
+                              required
+                            />
+                            <div class="valid-feedback">Prinato</div>
+                            <div class="invalid-feedback">
+                                Ne ostavlayte eto pole pustim.
+                            </div>
+                            <div>
+                                <img
+                                  id="computer-image-show"
+                                  alt="Izobrajenie ne dostupno po etoy ssilke
+                                  Image is not avaibale at this link"
+
+                                  src=""
+                                  style="display: none;"
+                                />  
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="computer-ram">(RAM):</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  id="computer-ram"
+                                  name="computer-ram"
+                                  required
+                                  min="0"
+                                  step="0.1"
+                                  max="1000"
+                                />
+                                <div class="valid-feedback">Prinato</div>
+                                <div class="invalid-feedback">
+                                    Ne ostavlayte eto pole pustim, min 0, max 1000.
+                                </div>
+                                <div class="form-group">
+                                    <label for="computer-price">(CPU)</label>
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      id="computer-cpu"
+                                      name="computer-cpu"
+                                      required
+                                      maxlength="100"
+                                    />
+                                    <div class="valid-feedback">Prinato</div>
+                                    <div class="invalid-feedback">
+                                        Ne ostavlayte eto pole pustim, min 0, max 10000.
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="computer-drive">(GB):</label>
+                                        <input
+                                          type="number"
+                                          class="form-control"
+                                          id="computer-drive"
+                                          name="computer-drive"
+                                          required
+                                          min="0"
+                                          max="10000"
+                                        />
+                                        <div class="valid-feedback">Prinato</div>
+                                        <div class="invalid-feedback">
+                                            Ne ostavlayte eto pole pustim, min 0, max 10000.
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="computer-drive-type">Price:</label>
+                                        <select
+                                          type="number"
+                                          class="form-control"
+                                          id="computer-drive-type"
+                                          name="computer-drive-type"
+                                        >
+                                          <option value="hdd">HDD</option>
+                                          <option value="ssd">SSD</option>
+                                        </select>  
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="computer-os">Operational system:</label>
+                                        <input
+                                          type="text"
+                                          class="form-control"
+                                          id="computer-os"
+                                          name="computer-os"
+                                          required
+                                          maxlength="200"
+                                        />
+                                        <div class="valid-feedback">Prinato</div>
+                                        <div class="invalid-feedback">
+                                            Ne ostavlayte eto pole pustim, max 200.
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="computer-video-card">Video card(GB):</label>
+                                            <input
+                                              type="number"
+                                              class="form-control"
+                                              id="computer-video-card"
+                                              name="computer-video-card"
+                                              required
+                                              min="0"
+                                              max="10000"
+                                            />
+                                            <div class="valid-feedback">Prinato</div>
+                                            <div class="invalid-feedback">
+                                                Ne ostavlayte eto pole pustim, min 0, max 10000.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <button type="submit" class="btn-primary">
+                                                Soxranit
+                                            </button>
+                                            <button 
+                                              type="reset"
+                                              class="btn btn-warning"
+                                              onclick="resetComputerForm()"
+                                            >
+                                              Sbrosit dannie
+                                            </button>    
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                  </div>  
+            </div>
+        </div>
+    </div>
+    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Poisk"
+                      onkeydown="onSearchkeyDown(event)"
+                      id="computer-search-input"
+                      style="display: none;"
+                    />
+                    
+                    <div id="computer-image-modal">
+                        <div id="computer-image-modal-content">
+                            <img id="computer-modal-image-show" />
+                        </div>
+                    </div>
+</body>
